@@ -3,21 +3,15 @@
 #include <math.h>
 #include "flash_attn_kernels.h"
 
-// ==========================================
-// GLOBALS & MACROS
-// ==========================================
 #define d 64
 #define Br_32 4
 #define Bc_32 4
 
-// Marked static so it doesn't conflict with the FP16 file during linking
+
 static __device__ float fmax_val(float a, float b) {
     return a > b ? a : b;
 }
 
-// ==========================================
-// FP32 KERNEL (Standard Cores)
-// ==========================================
 __global__ void flash_attention_4d(float *Q, float *K, float *V, float *O, int B, int nh, int N) {
     int b = blockIdx.z;
     int h = blockIdx.y;
@@ -83,7 +77,6 @@ __global__ void flash_attention_4d(float *Q, float *K, float *V, float *O, int B
     }
 }
 
-// C++ Wrapper
 torch::Tensor forward_fp32(torch::Tensor Q, torch::Tensor K, torch::Tensor V) {
     int B = Q.size(0);
     int nh = Q.size(1);
