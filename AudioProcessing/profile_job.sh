@@ -16,11 +16,10 @@ echo "loaded anaconda"
 source /home/apps/compilers/anaconda3/2024/bin/activate
 echo "activated anaconda"
 
-conda create --name profile_env python=3.10 -y
 conda activate profile_env
-echo "created and activated environment"
-pip install -r requirements.txt
-echo "pip install done"
+echo "activated environment"
+
+module load cuda-12.4
 
 # 2. PyTorch Native Profiler
 # Captures standard op-level traces (saved to ./logs/tensorboard/)
@@ -49,8 +48,8 @@ echo " Running Nsight Compute (ncu)"
 echo "======================================"
 ncu \
     --set full \
-    --output=ast_ncu_report \
-    --force-overwrite \
+    -o ast_ncu_report \
+    -f \
     python keyword_spotting.py --max-steps 3 --epochs 1
 
 echo "Profiling Complete. Reports generated in $SLURM_SUBMIT_DIR"
