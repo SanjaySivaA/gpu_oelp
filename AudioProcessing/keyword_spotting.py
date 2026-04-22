@@ -23,7 +23,7 @@ dataset = torchaudio.datasets.SPEECHCOMMANDS(
     root='./data',
     url='speech_commands_v0.02',
     folder_in_archive='SpeechCommands',
-    download=True
+    download=False
 )
 
 waveform, sample_rate, label, speaker_id, utterance_number = dataset[0]
