@@ -11,3 +11,5 @@ logs/
 errs/
 
 .env
+
+directory_contents
