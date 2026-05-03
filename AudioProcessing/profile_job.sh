@@ -16,10 +16,12 @@ echo "loaded anaconda"
 source /home/apps/compilers/anaconda3/2024/bin/activate
 echo "activated anaconda"
 
+module load cuda-12.4
+
 conda activate profile_env
 echo "activated environment"
 
-module load cuda-12.4
+export LD_LIBRARY_PATH=$CONDA_PREFIX/lib:$LD_LIBRARY_PATH
 
 # 2. PyTorch Native Profiler
 # Captures standard op-level traces (saved to ./logs/tensorboard/)
@@ -34,22 +36,14 @@ echo "======================================"
 echo " Running Nsight Systems (nsys)"
 echo "======================================"
 nsys profile \
-    --trace=cuda,nvtx,osrt \
+    --trace=cuda,nvtx,osrt,cudnn,cublas \
+    --sample=cpu \
     --output=ast_nsys_report \
     --force-overwrite=true \
     python keyword_spotting.py --max-steps 10 --epochs 1
-
 # 4. Nsight Compute (ncu)
 # Captures kernel-level architectural metrics (Tensor Core utilization, SM occupancy).
 # Note: We limit to 3 steps here because NCU serializes and replays kernels, 
 # resulting in massive execution overhead.
-echo "======================================"
-echo " Running Nsight Compute (ncu)"
-echo "======================================"
-ncu \
-    --set full \
-    -o ast_ncu_report \
-    -f \
-    python keyword_spotting.py --max-steps 3 --epochs 1
 
 echo "Profiling Complete. Reports generated in $SLURM_SUBMIT_DIR"
