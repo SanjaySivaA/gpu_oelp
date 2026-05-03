@@ -9,3 +9,5 @@ venv/
 outs/
 logs/
 errs/
+
+.env
