@@ -2,3 +2,5 @@ torch
 torchaudio
 matplotlib
 tqdm
+torchcodec
+soundfile
